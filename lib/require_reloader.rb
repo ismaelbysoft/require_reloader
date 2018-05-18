@@ -53,7 +53,11 @@ module RequireReloader
             helper.remove_gem_module_if_defined(gem)
           end
           $".delete_if {|s| s.include?(gem)}
-          load gem
+          begin
+            load gem # ruby 2.5
+          rescue LoadError
+            require gem # ruby 2.3.4
+          end
           opts[:callback].call(gem) if opts[:callback]
         end
       end
